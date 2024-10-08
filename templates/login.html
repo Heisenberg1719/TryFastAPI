@@ -1,0 +1,87 @@
+{% extends "base_template.html" %}
+
+{% block title %}Login - FinTech Solutions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-end mb-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="toggleUserType" onchange="toggleLoginType()">
+            <label class="form-check-label" for="toggleUserType">Admin Login</label>
+        </div>
+    </div>
+    <div class="card shadow-lg rainbow-border mb-4">
+        <div class="card-body">
+            <h2>User Login</h2>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <form method="post" action="/login" id="loginForm">
+                <div id="mobileNumberSection" class="mb-3">
+                    <label for="mobile" class="form-label">Mobile Number</label>
+                    <input type="tel" class="form-control" id="mobile" name="mobile" pattern="[0-9]{10}" required>
+                </div>
+                <div id="usernameSection" class="mb-3" style="display: none;">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" readonly>
+                </div>
+                <div id="passwordSection" class="mb-3" style="display: none;">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <input type="hidden" id="user_type" name="user_type" value="user">
+                <button type="button" class="btn btn-primary" id="nextButton" onclick="fetchUsername()">Next</button>
+                <button type="submit" class="btn btn-primary" id="loginButton" style="display: none;">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleLoginType() {
+        const toggleSwitch = document.getElementById('toggleUserType');
+        const loginHeading = document.querySelector('h2');
+        const userTypeInput = document.getElementById('user_type');
+        const mobileNumberSection = document.getElementById('mobileNumberSection');
+        const usernameSection = document.getElementById('usernameSection');
+        const passwordSection = document.getElementById('passwordSection');
+        const nextButton = document.getElementById('nextButton');
+        const loginButton = document.getElementById('loginButton');
+
+        if (toggleSwitch.checked) {
+            loginHeading.textContent = 'Admin Login';
+            userTypeInput.value = 'admin';
+            mobileNumberSection.style.display = 'block';
+            usernameSection.style.display = 'none';
+            passwordSection.style.display = 'block';
+            nextButton.style.display = 'none';
+            loginButton.style.display = 'block';
+        } else {
+            loginHeading.textContent = 'User Login';
+            userTypeInput.value = 'user';
+            mobileNumberSection.style.display = 'block';
+            usernameSection.style.display = 'none';
+            passwordSection.style.display = 'none';
+            nextButton.style.display = 'block';
+            loginButton.style.display = 'none';
+        }
+    }
+
+    function fetchUsername() {
+        const mobileNumber = document.getElementById('mobile').value;
+        if (mobileNumber.length === 10) {
+            // Simulate fetching username from server
+            const username = 'User' + mobileNumber.slice(-4); // Mock username based on mobile number
+            document.getElementById('username').value = username;
+            document.getElementById('usernameSection').style.display = 'block';
+            document.getElementById('passwordSection').style.display = 'block';
+            document.getElementById('nextButton').style.display = 'none';
+            document.getElementById('loginButton').style.display = 'block';
+        } else {
+            alert('Please enter a valid 10-digit mobile number.');
+        }
+    }
+</script>
+{% endblock %}
